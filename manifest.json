@@ -27,7 +27,7 @@
         "tabs",
         "storage",
         "scripting",
-        "https://192.168.1.55:5000/images"
+        "https://127.0.0.1:5000/images"
     ],
     "host_permissions": [
         "https://garticphone.com/*/"
