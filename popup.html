@@ -1,32 +1,17 @@
-
-
 <!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
-    <title>Document</title>
+<html>
+  <head>
     <style>
-        body {
-            width: 250px;
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            color: white;
-            font-size: 30px;
-            background-color: #696969;
-        }
+      /* Add CSS styles for positioning the popup */
     </style>
-</head>
-
-<body>
-    <script src="./popup_script.js"></script>
-</body>
-
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <label id="loadImageLabel">Load Image</label>
+    <button id="loadImageButton">Load Image</button>
+    <div id="imageContainer"></div>
+    <button id="waitForSpace">Wait for Space</button>
+    <button id="sendData">Send Data</button>
+    <label id="statusLabel"></label>
+  </body>
 </html>

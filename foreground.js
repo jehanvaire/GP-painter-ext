@@ -1,73 +1,78 @@
-// création de la fenêtre de dialogue
-const main_containter = document.createElement("DIV");
-main_containter.classList.add("main_container");
+// Créer les éléments
+var container = document.createElement("div");
+container.style.borderRadius = "10px";
+container.style.position = "absolute";
+container.style.width = "20%";
+container.style.height = "50%";
+container.style.border = "1px solid black";
+container.style.backgroundColor = "white";
+container.style.top = "10px";
+container.style.left = "10px";
+// Mettre au premier plan
+container.style.zIndex = "9999";
 
-const titre = document.createElement("DIV");
-titre.classList.add("titre");
-titre.innerHTML = "Charger image";
+var label = document.createElement("label");
+label.innerText = "Charger une image";
+label.style.position = "absolute";
+label.style.top = "10px";
+label.style.left = "10px";
 
-const button_load_wrapper = document.createElement("div");
-const button_load_image = document.createElement("button");
-const input = document.createElement("input");
+var loadButton = document.createElement("button");
+loadButton.innerText = "Charger une image";
+loadButton.style.position = "absolute";
+loadButton.style.top = "40px";
+loadButton.style.left = "10px";
 
-button_load_wrapper.classList.add("button_load_wrapper");
-button_load_image.classList.add("button_load_image");
-button_load_image.innerHTML = "+";
-input.id = "input_load_image";
-input.setAttribute("type", "file");
-input.setAttribute("accept", "image/*");
+var imageContainer = document.createElement("div");
+imageContainer.style.position = "absolute";
+imageContainer.style.top = "80px";
+imageContainer.style.left = "10px";
+imageContainer.style.width = "90%";
+imageContainer.style.height = "40%";
+imageContainer.style.border = "1px solid black";
+imageContainer.style.backgroundSize = "contain";
+imageContainer.style.backgroundRepeat = "no-repeat";
+imageContainer.style.backgroundPosition = "center";
 
-// add button and input to wrapper
-button_load_wrapper.appendChild(button_load_image);
-button_load_wrapper.appendChild(input);
+var waitButton1 = document.createElement("button");
+waitButton1.innerText = "Attendre l'entrée utilisateur";
+waitButton1.style.position = "absolute";
+waitButton1.style.top = "60%";
+waitButton1.style.left = "10px";
 
-const image = document.createElement("IMG");
-image.classList.add("image");
+var waitButton2 = document.createElement("button");
+waitButton2.innerText = "Attendre l'entrée utilisateur 2";
+waitButton2.style.position = "absolute";
+waitButton2.style.top = "65%";
+waitButton2.style.left = "10px";
 
-const input_point1 = document.createElement("button");
-const input_point2 = document.createElement("button");
-input_point1.classList.add("input_point");
-input_point2.classList.add("input_point");
-// Add the same logic here
-input_point1.innerHTML = "Set point 1";
-input_point2.innerHTML = "Set point 2";
+var sendButton = document.createElement("button");
+sendButton.innerText = "Envoyer l'image et la position de la souris";
+sendButton.style.position = "absolute";
+sendButton.style.top = "70%";
+sendButton.style.left = "10px";
+sendButton.style.width = "90%";
 
-const buttonPeindre = document.createElement("DIV");
-// add id to button
-// disable button
-// document.getElementById("myBtn").disabled = true;
-buttonPeindre.classList.add("button_peindre");
-buttonPeindre.innerHTML = "Peindre l'image";
+var statusLabel = document.createElement("label");
+statusLabel.innerText = "En attente de l'entrée utilisateur";
+statusLabel.style.position = "absolute";
+statusLabel.style.top = "80%";
+statusLabel.style.left = "10px";
+statusLabel.style.width = "90%";
 
-const statutTxt = document.createElement("DIV");
-statutTxt.classList.add("status_txt");
-statutTxt.innerHTML = "Statut :";
+// Ajouter les éléments au conteneur
+container.appendChild(label);
+container.appendChild(loadButton);
+container.appendChild(imageContainer);
+container.appendChild(waitButton1);
+container.appendChild(waitButton2);
+container.appendChild(sendButton);
+container.appendChild(statusLabel);
 
-const statutValue = document.createElement("DIV");
-statutValue.classList.add("status_value");
-statutValue.innerHTML = "En attente";
+// Ajouter le conteneur à la page
+document.body.appendChild(container);
 
-main_containter.appendChild(titre);
-main_containter.appendChild(button_load_wrapper);
-main_containter.appendChild(image);
-main_containter.appendChild(input_point1);
-main_containter.appendChild(input_point2);
-main_containter.appendChild(buttonPeindre);
-main_containter.appendChild(statutTxt);
-main_containter.appendChild(statutValue);
-
-// ajout de la fenêtre de dialogue au DOM
-document.body.appendChild(main_containter);
-
-// écouteur sur input
-input.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    image.setAttribute("src", reader.result);
-  };
-  reader.readAsDataURL(file);
-});
+var mousePosition = { x: 0, y: 0 };
 
 const point1 = {
   x: 0,
@@ -78,124 +83,115 @@ const point2 = {
   y: 0,
 };
 
-/**
- * On écoute le click sur le bouton de saisie,
- * si click alors on écoute les mouse event
- * => une fois la position obtenue oin l'affecte à point1
- * => L'event ne se joue qu'une fois grâce au {once : true}
- */
-input_point1.addEventListener("click", () => {
-  statutValue.innerHTML = "Point 1 : en attente.\n Cliquez pour valider.";
-  document.addEventListener(
-    "mouseup",
-    (e) => {
-      if (e.button === 1 || e.button === 2) {
-        point1.x = e.clientX;
-        point1.y = e.clientY + 103;
-        e.stopPropagation();
+document.addEventListener("mousemove", function (mouseMoveEvent) {
+  mousePosition.x = mouseMoveEvent.clientX;
+  mousePosition.y = mouseMoveEvent.clientY;
+});
 
-        if (point1.x !== 0 || point1.y !== 0) {
-          statutValue.innerHTML = "Point 1 défini";
-        }
+// Gérer le comportement du bouton "Attendre l'entrée utilisateur"
+waitButton1.addEventListener("click", function () {
+  statusLabel.innerText = "En attente de l'appui sur la touche Espace";
+
+  document.addEventListener(
+    "keydown",
+    function (event) {
+      if (event.code === "Space") {
+        point1.x = mousePosition.x;
+        point1.y = mousePosition.y;
+
+        statusLabel.innerText =
+          "Position de la souris : X=" +
+          mousePosition.x +
+          ", Y=" +
+          mousePosition.y;
       }
     },
     { once: true }
   );
 });
 
-input_point2.addEventListener("click", () => {
-  statutValue.innerHTML = "Point 2 : en attente.\n Cliquez pour valider.";
-  document.addEventListener(
-    "mouseup",
-    (e) => {
-      if (e.button === 1 || e.button === 2) {
-        point2.x = e.clientX;
-        point2.y = e.clientY + 103;
-        e.stopPropagation();
+// Gérer le comportement du bouton "Attendre l'entrée utilisateur"
+waitButton2.addEventListener("click", function () {
+  statusLabel.innerText = "En attente de l'appui sur la touche Espace";
 
-        if (point2.x !== 0 || point2.y !== 0) {
-          statutValue.innerHTML = "Point 2 défini";
-          // document.getElementById("myBtn").disabled = false;
-        }
+  document.addEventListener(
+    "keydown",
+    function (event) {
+      if (event.code === "Space") {
+        point2.x = mousePosition.x;
+        point2.y = mousePosition.y;
+
+        statusLabel.innerText =
+          "Position de la souris : X=" +
+          mousePosition.x +
+          ", Y=" +
+          mousePosition.y;
       }
     },
     { once: true }
   );
 });
 
-buttonPeindre.addEventListener("click", () => {
-  
+// Convertir une image en base64
+function convertImageToBase64(url) {
+  return new Promise((resolve, reject) => {
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function () {
+      var canvas = document.createElement("CANVAS");
+      var ctx = canvas.getContext("2d");
+      var dataURL;
+      canvas.height = this.naturalHeight;
+      canvas.width = this.naturalWidth;
+      ctx.drawImage(this, 0, 0);
+      dataURL = canvas.toDataURL("image/png");
+      resolve(dataURL);
+    };
+    img.src = url;
+  });
+}
 
-  if (point1.x != 0 && point1.y != 0 && point2.x != 0 && point2.y != 0) {
-    statutValue.innerHTML = "Envoi de l'image...";
+// Gérer le comportement du bouton "Envoyer l'image et la position de la souris"
+sendButton.addEventListener("click", async function () {
+  statusLabel.innerText = "Envoi des données en cours...";
 
+  var imageURL = imageContainer.style.backgroundImage.slice(5, -2); // Get the URL from the backgroundImage property
 
+  var imageBase64 = await convertImageToBase64(imageURL);
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append("image", image.src);
-    formData.append("x1", point1.x);
-    formData.append("y1", point1.y);
-    formData.append("x2", point2.x);
-    formData.append("y2", point2.y);
+  formData.append("image", imageBase64);
+  formData.append("x1", point1.x);
+  formData.append("y1", point1.y);
+  formData.append("x2", point2.x);
+  formData.append("y2", point2.y);
 
-
-    fetch("https://localhost:5000/images", {
-      method: "POST",
-      // headers: { "Content-Type": "application/json" },
-      body: formData,
-    }).then((response) => {
-      if (response.status === 200) {
-        response.json().then((data) => {
-          console.log(data);
-        });
-      }
+  fetch("https://127.0.0.1:5000/images", {
+    method: "POST",
+    body: formData,
+  })
+    .then(function (response) {
+      statusLabel.innerText = "Données envoyées avec succès";
+    })
+    .catch(function (error) {
+      statusLabel.innerText = "Erreur lors de l'envoi des données";
     });
-
-
-    /**
-     * reset points
-     * disable btn point 2 + btn peindre
-     */
-  }
 });
 
-
-
-// chrome.runtime.sendMessage(
-//   {
-//     message: "peindre_image",
-//     // payload: [image.getAttribute("src"), point1, point2],
-//     payload: "bonjour",
-//   },
-//   (response) => {
-//     if (response) {
-//       if (response.message === "image_peinte") {
-//         statutValue.innerHTML = "Image peinte";
-//       } else {
-//         statutValue.innerHTML = "Erreur";
-//       }
-//     }
-//   }
-// );
-
-// // écouteur sur le bouton
-// chrome.runtime.sendMessage({
-//     message: "get_name"
-// }, response => {
-//     if (response.message === 'success') {
-//         ce_name.innerHTML = `Hello ${response.payload}`;
-//     }
-// });
-
-// // écouteur sur le changement de nom
-// input.addEventListener('click', () => {
-//     chrome.runtime.sendMessage({
-//         message: "change_name",
-//         payload: input.value
-//     }, response => {
-//         if (response.message === 'success') {
-//             ce_name.innerHTML = `Hello ${ce_input.value}`;
-//         }
-//     });
-// });
+// Gérer le comportement du bouton "Charger une image"
+loadButton.addEventListener("click", function () {
+  // Afficher une boîte de dialogue pour choisir un fichier
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = function (event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      imageContainer.style.backgroundImage = "url(" + reader.result + ")";
+    };
+  }
+  input.click();
+});
