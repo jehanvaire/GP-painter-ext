@@ -60,6 +60,31 @@ statusLabel.style.top = "80%";
 statusLabel.style.left = "10px";
 statusLabel.style.width = "90%";
 
+// create slider for brush size (1 to 5)
+var slider = document.createElement("input");
+slider.type = "range";
+slider.min = 1;
+slider.max = 5;
+slider.value = 1;
+slider.style.position = "absolute";
+slider.style.top = "90%";
+slider.style.left = "10px";
+slider.style.width = "90%";
+slider.style.height = "10%";
+
+// show brush size
+var brushSize = document.createElement("label");
+brushSize.innerText = "Taille du pinceau : " + slider.value;
+brushSize.style.position = "absolute";
+brushSize.style.top = "85%";
+brushSize.style.left = "10px";
+brushSize.style.width = "90%";
+brushSize.style.height = "10%";
+slider.oninput = function () {
+  brushSize.innerText = "Taille du pinceau : " + this.value;
+};
+
+
 // Ajouter les éléments au conteneur
 container.appendChild(label);
 container.appendChild(loadButton);
@@ -68,6 +93,8 @@ container.appendChild(waitButton1);
 container.appendChild(waitButton2);
 container.appendChild(sendButton);
 container.appendChild(statusLabel);
+container.appendChild(slider);
+container.appendChild(brushSize);
 
 // Ajouter le conteneur à la page
 document.body.appendChild(container);
@@ -85,15 +112,13 @@ const point2 = {
 
 document.addEventListener("mousemove", function (mouseMoveEvent) {
   mousePosition.x = mouseMoveEvent.pageX;
-  mousePosition.y = mouseMoveEvent.pageY;
+  mousePosition.y = mouseMoveEvent.pageY + 103;
 });
 
 function setPoint1(event) {
   if (event.code === "Space") {
     point1.x = mousePosition.x;
     point1.y = mousePosition.y;
-
-    console.log("point1", point1);
 
     statusLabel.innerText =
       "Position de la souris : X=" +
@@ -107,8 +132,6 @@ function setPoint2(event) {
   if (event.code === "Space") {
     point2.x = mousePosition.x;
     point2.y = mousePosition.y;
-
-    console.log("point2", point2);
 
     statusLabel.innerText =
       "Position de la souris : X=" +
@@ -169,13 +192,12 @@ sendButton.addEventListener("click", async function () {
 
   const formData = new FormData();
 
-  console.log(point1, point2)
-
   formData.append("image", imageBase64);
   formData.append("x1", point1.x);
   formData.append("y1", point1.y);
   formData.append("x2", point2.x);
   formData.append("y2", point2.y);
+  formData.append("pas", slider.value);
 
   fetch("https://127.0.0.1:5000/images", {
     method: "POST",
