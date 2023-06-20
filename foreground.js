@@ -84,52 +84,60 @@ const point2 = {
 };
 
 document.addEventListener("mousemove", function (mouseMoveEvent) {
-  mousePosition.x = mouseMoveEvent.clientX;
-  mousePosition.y = mouseMoveEvent.clientY;
+  mousePosition.x = mouseMoveEvent.pageX;
+  mousePosition.y = mouseMoveEvent.pageY;
 });
+
+function setPoint1(event) {
+  if (event.code === "Space") {
+    point1.x = mousePosition.x;
+    point1.y = mousePosition.y;
+
+    console.log("point1", point1);
+
+    statusLabel.innerText =
+      "Position de la souris : X=" +
+      mousePosition.x +
+      ", Y=" +
+      mousePosition.y;
+  }
+}
+
+function setPoint2(event) {
+  if (event.code === "Space") {
+    point2.x = mousePosition.x;
+    point2.y = mousePosition.y;
+
+    console.log("point2", point2);
+
+    statusLabel.innerText =
+      "Position de la souris : X=" +
+      mousePosition.x +
+      ", Y=" +
+      mousePosition.y;
+
+  }
+}
 
 // Gérer le comportement du bouton "Attendre l'entrée utilisateur"
 waitButton1.addEventListener("click", function () {
   statusLabel.innerText = "En attente de l'appui sur la touche Espace";
 
-  document.addEventListener(
-    "keydown",
-    function (event) {
-      if (event.code === "Space") {
-        point1.x = mousePosition.x;
-        point1.y = mousePosition.y;
-
-        statusLabel.innerText =
-          "Position de la souris : X=" +
-          mousePosition.x +
-          ", Y=" +
-          mousePosition.y;
-      }
-    },
-    { once: true }
-  );
-});
+  document.removeEventListener("keydown", setPoint2);
+  document.addEventListener("keydown", setPoint1);
+}, {
+  once: true
+}
+);
 
 // Gérer le comportement du bouton "Attendre l'entrée utilisateur"
 waitButton2.addEventListener("click", function () {
   statusLabel.innerText = "En attente de l'appui sur la touche Espace";
 
-  document.addEventListener(
-    "keydown",
-    function (event) {
-      if (event.code === "Space") {
-        point2.x = mousePosition.x;
-        point2.y = mousePosition.y;
-
-        statusLabel.innerText =
-          "Position de la souris : X=" +
-          mousePosition.x +
-          ", Y=" +
-          mousePosition.y;
-      }
-    },
-    { once: true }
-  );
+  document.removeEventListener("keydown", setPoint1);
+  document.addEventListener("keydown", setPoint2);
+}, {
+  once: true
 });
 
 // Convertir une image en base64
@@ -160,6 +168,8 @@ sendButton.addEventListener("click", async function () {
   var imageBase64 = await convertImageToBase64(imageURL);
 
   const formData = new FormData();
+
+  console.log(point1, point2)
 
   formData.append("image", imageBase64);
   formData.append("x1", point1.x);
